@@ -21,7 +21,6 @@ export default function Account() {
     console.log("resposne form dispatch", response);
     // writing the dipatch for logout
   };
-  console.log(subpage);
   return (
     <>
       <div className="container">

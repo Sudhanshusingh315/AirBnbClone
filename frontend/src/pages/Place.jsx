@@ -1,20 +1,26 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { storage } from "../utils/firebase";
+import { useSelector, useDispatch } from "react-redux";
+import { newPostThunk } from "../../features/posts/postSlics";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import { useState } from "react";
+import AllPlace from "../components/AllPlace";
 export default function Place() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { action } = useParams();
-  const [imageRecieved, setImageRecieved] = useState(null);
-  const [progressPercentage, setProgresspercent] = useState(0);
-  const [file, setFile] = useState("");
+  const [places, setPlaces] = useState({});
+  const [perks, setPerks] = useState([]);
   const [link, setLink] = useState("");
+  // stores my images link
   const [links, setLinks] = useState([]);
-
+  const { userInfo } = useSelector((state) => state.user);
   // STORING IMAGES TO FIRE BASE
+  const token = userInfo.token;
   const uploadImagesToFireBase = (file) => {
     console.log("this is where is it coming from ", file);
     if (!file) return console.log("file's state is empty");
-    const storageRef = ref(storage, `accommodatoin/${file.name}`);
+    const storageRef = ref(storage, `accommodation/${file.name}`);
     const uploadTask = uploadBytesResumable(storageRef, file);
 
     uploadTask.on(
@@ -24,7 +30,6 @@ export default function Place() {
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100
         );
         console.log("progress ", progress);
-        setProgresspercent(progress);
       },
       (error) => {
         alert(error);
@@ -32,7 +37,6 @@ export default function Place() {
       async () => {
         await getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           console.log("image url", downloadURL);
-          setImageRecieved(true);
           setLinks((prev) => {
             return [...prev, downloadURL];
           });
@@ -40,24 +44,59 @@ export default function Place() {
       }
     );
   };
-	// handling link inputs when i paste them for the first time and, all tho i should not be doing this
+  // handling link inputs when i paste them for the first time and, all tho i should not be doing this
   const handlelinkInputs = (e) => {
     e.preventDefault();
     setLink(e.target.value);
   };
+  // managing state on link array
   const handleUploadImages = (e) => {
     e.preventDefault();
     const newLinks = [...links, link];
+    // because this is an async function and it will take time to get the value
     setLinks(newLinks);
+    setPlaces((prev) => {
+      return { ...prev, photos: newLinks };
+    });
     setLink("");
   };
+  // handling upload from device
   function handleUploadFromDevise(e) {
     const newFile = e.target.files[0];
     // setFile(newFile);
     uploadImagesToFireBase(newFile);
   }
-  console.log("progress", progressPercentage);
-  console.log(file);
+  // handeling for the checked inputs
+  const handleCheckInputs = (e) => {
+    e.preventDefault();
+    const { checked, name } = e.target;
+    // check is either going to be true or false
+    if (checked) {
+      setPerks((prev) => {
+        return [...prev, { [e.target.name]: e.target.checked }];
+      });
+    } else {
+      const index = perks.indexOf(e.target.name);
+      perks.splice(index, 1);
+      setPerks((prev) => {
+        return [...prev];
+      });
+    }
+  };
+
+  const handelFinalPlaces = async (e) => {
+    e.preventDefault();
+
+    // dispatching final value
+    dispatch(newPostThunk({ places, token })).then((res) => {
+      console.log(res);
+      if (res.meta.requestStatus === "fulfilled") {
+        navigate("/account/places");
+      } else {
+        console.log("can not navigate now");
+      }
+    });
+  };
   return (
     <>
       {action === "new" ? (
@@ -70,6 +109,11 @@ export default function Place() {
               name="title"
               type="text"
               className="w-full py-2 px-4 my-2 rounded-lg border-2 border-gray-300 "
+              onChange={(e) => {
+                setPlaces((prev) => {
+                  return { ...prev, [e.target.name]: e.target.value };
+                });
+              }}
             />
             <h2 className="font-bold ">Address</h2>
             <p className="text-sm text-gray-400">full address to your place</p>
@@ -78,6 +122,11 @@ export default function Place() {
               name="address"
               type="text"
               className="w-full py-2 px-4 my-2 rounded-lg border-2 border-gray-300 "
+              onChange={(e) => {
+                setPlaces((prev) => {
+                  return { ...prev, [e.target.name]: e.target.value };
+                });
+              }}
             />
             <h2 className="font-bold ">Photos</h2>
             <p className="text-sm text-gray-400">more=better</p>
@@ -107,14 +156,12 @@ export default function Place() {
               {links.length > 0 &&
                 links.map((image, i) => {
                   return (
-                    <>
-                      <img
-                        key={image}
-                        src={image}
-                        alt={i}
-                        className="rounded-xl w-[100%] h-[100%] object-cover"
-                      />
-                    </>
+                    <img
+                      key={image}
+                      src={image}
+                      alt={i}
+                      className="rounded-xl w-[100%] h-[100%] object-cover"
+                    />
                   );
                 })}
               <label className="border flex gap-2 text-gray-500 justify-center items-center bg-transparent rounded-2xl p-8 text-2xl">
@@ -127,21 +174,32 @@ export default function Place() {
                 />
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
+                  viewBox="0 0 24 24"
                   fill="currentColor"
-                  className="w-8 h-8"
+                  className="w-6 h-6"
                 >
-                  <path d="M9.25 13.25a.75.75 0 0 0 1.5 0V4.636l2.955 3.129a.75.75 0 0 0 1.09-1.03l-4.25-4.5a.75.75 0 0 0-1.09 0l-4.25 4.5a.75.75 0 1 0 1.09 1.03L9.25 4.636v8.614Z" />
-                  <path d="M3.5 12.75a.75.75 0 0 0-1.5 0v2.5A2.75 2.75 0 0 0 4.75 18h10.5A2.75 2.75 0 0 0 18 15.25v-2.5a.75.75 0 0 0-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5Z" />
+                  <path
+                    fillRule="evenodd"
+                    d="M11.47 2.47a.75.75 0 0 1 1.06 0l4.5 4.5a.75.75 0 0 1-1.06 1.06l-3.22-3.22V16.5a.75.75 0 0 1-1.5 0V4.81L8.03 8.03a.75.75 0 0 1-1.06-1.06l4.5-4.5ZM3 15.75a.75.75 0 0 1 .75.75v2.25a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5V16.5a.75.75 0 0 1 1.5 0v2.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V16.5a.75.75 0 0 1 .75-.75Z"
+                    clipRule="evenodd"
+                  />
                 </svg>
-                Upload (add this feature later)
+                Upload
               </label>
             </div>
             <h2 className="font-bold">Description</h2>
             <p className="text-sm text-gray-400">
               add description about the place
             </p>
-            <textarea className="w-full border-2 border-gray-300 px-2 h-20" />
+            <textarea
+              name="description"
+              className="w-full border-2 border-gray-300 px-2 h-20"
+              onChange={(e) => {
+                setPlaces((prev) => {
+                  return { ...prev, [e.target.name]: e.target.value };
+                });
+              }}
+            />
 
             <h2 className="font-bold">Perks</h2>
             <p className="text-sm text-gray-400">
@@ -149,7 +207,17 @@ export default function Place() {
             </p>
             <div className="flex gap-4 my-6 flex-wrap">
               <label className="flex justify-center items-center py-4 px-2 border-b-2 border-gray-300 shadow-lg  rounded-lg">
-                <input type="checkbox" name="" id="" />
+                <input
+                  type="checkbox"
+                  name="wifi"
+                  id=""
+                  onChange={(e) => {
+                    handleCheckInputs(e);
+                    setPlaces((prev) => {
+                      return { ...prev, perks: perks };
+                    });
+                  }}
+                />
                 <div className=" flex p-2 justify-center items-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -168,7 +236,17 @@ export default function Place() {
                 </div>
               </label>
               <label className="flex justify-center items-center py-4 px-2 border-b-2 border-gray-300 shadow-lg  rounded-lg">
-                <input type="checkbox" name="" id="" />
+                <input
+                  type="checkbox"
+                  name="free_parking"
+                  id=""
+                  onChange={(e) => {
+                    handleCheckInputs(e);
+                    setPlaces((prev) => {
+                      return { ...prev, perks: perks };
+                    });
+                  }}
+                />
                 <div className=" flex p-2 justify-center items-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -185,7 +263,14 @@ export default function Place() {
                 </div>
               </label>
               <label className="flex justify-center items-center py-4 px-2 border-b-2 border-gray-300 shadow-lg  rounded-lg">
-                <input type="checkbox" name="" id="" />
+                <input
+                  type="checkbox"
+                  name="pets"
+                  id=""
+                  onChange={(e) => {
+                    handleCheckInputs(e);
+                  }}
+                />
                 <div className=" flex p-2 justify-center items-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -206,7 +291,14 @@ export default function Place() {
                 </div>
               </label>
               <label className="flex justify-center items-center py-4 px-2 border-b-2 border-gray-300 shadow-lg  rounded-lg">
-                <input type="checkbox" name="" id="" />
+                <input
+                  type="checkbox"
+                  name="private_entrance"
+                  id=""
+                  onChange={(e) => {
+                    handleCheckInputs(e);
+                  }}
+                />
                 <div className="felx p-2 justify-center items-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -227,7 +319,14 @@ export default function Place() {
                 </div>
               </label>
               <label className="flex justify-center items-center py-4 px-2 border-b-2 border-gray-300 shadow-lg  rounded-lg">
-                <input type="checkbox" name="" id="" />
+                <input
+                  type="checkbox"
+                  name="radio"
+                  id=""
+                  onChange={(e) => {
+                    handleCheckInputs(e);
+                  }}
+                />
                 <div className="felx p-2 justify-center items-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -253,27 +352,59 @@ export default function Place() {
             <div className="grid grid-cols-2  md:grid-cols-3 gap-4 my-4">
               <div>
                 <h3>Check in time</h3>
-                <input type="text" placeholder="14:00" className="w-[100%]" />
+                <input
+                  type="text"
+                  placeholder="14:00"
+                  name="checkIn"
+                  className="w-[100%]"
+                  onChange={(e) => {
+                    setPlaces((prev) => {
+                      return { ...prev, [e.target.name]: e.target.value };
+                    });
+                  }}
+                />
               </div>
               <div>
                 <h3>Check out time</h3>
-                <input type="text" placeholder="18:00" className="w-[100%]" />
+                <input
+                  type="text"
+                  name="checkOut"
+                  placeholder="18:00"
+                  className="w-[100%]"
+                  onChange={(e) => {
+                    setPlaces((prev) => {
+                      return { ...prev, [e.target.name]: e.target.value };
+                    });
+                  }}
+                />
               </div>
               <div>
                 <h3>Max number of people</h3>
                 <input
                   type="number"
+                  name="maxGuests"
+                  onChange={(e) => {
+                    setPlaces((prev) => {
+                      return { ...prev, [e.target.name]: e.target.value };
+                    });
+                  }}
                   placeholder="Max number of guests"
                   className="w-[100%]"
                 />
               </div>
             </div>
           </form>
-          <button className="w-full py-2 rounded-full text-xl bg-primary my-2">
+          <button
+            className="w-full py-2 rounded-full text-xl bg-primary my-2 text-white hover:bg-red-600"
+            onClick={(e) => {
+              handelFinalPlaces(e);
+            }}
+          >
             SAVE
           </button>
         </div>
       ) : (
+        <>
         <div className="container">
           <Link
             to="/account/places/new"
@@ -294,6 +425,10 @@ export default function Place() {
             Add New Place
           </Link>
         </div>
+        <div>
+          <AllPlace />
+        </div>
+        </>
       )}
     </>
   );

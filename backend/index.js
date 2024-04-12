@@ -1,7 +1,9 @@
 require('dotenv').config()
 const express = require("express");
 const mongoose = require("mongoose");
+const cookieParser = require("cookie-parser");
 const userRouter = require('./Routes/userRouter');
+const postRouter  = require('./Routes/postsRouter');
 const cors = require("cors");
 const app = express();
 app.use(express.json());
@@ -12,9 +14,14 @@ async function main() {
     await mongoose.connect(process.env.CONNECTION_STRING)
     console.log("mongoose connected")
 }
+app.use(cookieParser());
+
 app.use(cors());
 // user Router
 app.use('/api/user',userRouter.router);
+// post Roter
+app.use('/api/post',postRouter.router);
 app.listen(process.env.PORT, () => {
+
   console.log(`server running at ${process.env.PORT}`);
 });

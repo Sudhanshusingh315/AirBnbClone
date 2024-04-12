@@ -6,13 +6,13 @@ exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    if ((!email, !password)) {
+    if ((!email || !password)) {
       throw new Error("Fill all the fields");
     }
     const userExists = await User.findOne({ email });
     if (userExists && userExists.matchPassword(password)) {
       console.log("inside after password verification")
-      const token = await generateToken({
+      const token = await generateToken(res,{
         id: userExists._id.toHexString(),
         name: userExists.name,
       });
@@ -47,7 +47,7 @@ exports.register = async (req, res) => {
       password,
     });
     if (newUser) {
-      const token = await generateToken({
+      const token = await generateToken(res,{
         id: newUser._id.toHexString(),
         name: newUser.name,
       });
