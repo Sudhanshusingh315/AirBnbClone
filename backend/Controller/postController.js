@@ -24,6 +24,7 @@ exports.newPost = async (req, res) => {
 };
 
 exports.getPost = async (req, res) => {
-  res.json(req.user.id);
+  const id = req.user.id;
   const allPosts = await Place.find({ owner: id });
+res.status(201).json({allPosts});
 };

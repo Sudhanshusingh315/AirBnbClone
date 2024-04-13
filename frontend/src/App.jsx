@@ -6,6 +6,7 @@ import Register from "./pages/Register";
 import Index from "./pages/Index";
 import PrivateRoute from "./components/PrivateRoute";
 import Account from "./pages/Account";
+import EditPage from "./pages/EditPage";
 function App() {
   return <>
   <Routes>
@@ -17,6 +18,7 @@ function App() {
       <Route path = "" element={<PrivateRoute/>}>
         <Route path="/account/:subpage?" element={<Account/>}/> 
         <Route path="/account/:subpage/:action" element={<Account/>}/> 
+        <Route path="/account/places/new/:id" element={<EditPage/>}/>
       </Route>
     </Route>
   </Routes>
