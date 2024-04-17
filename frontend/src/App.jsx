@@ -7,6 +7,8 @@ import Index from "./pages/Index";
 import PrivateRoute from "./components/PrivateRoute";
 import Account from "./pages/Account";
 import EditPage from "./pages/EditPage";
+import SinglePage from "./pages/SinglePage";
+import MoreImages from "./pages/MoreImages";
 function App() {
   return <>
   <Routes>
@@ -20,6 +22,8 @@ function App() {
         <Route path="/account/:subpage/:action" element={<Account/>}/> 
         <Route path="/account/places/new/:id" element={<EditPage/>}/>
       </Route>
+      <Route path="/places/:id" element={<SinglePage/>}/>
+      <Route path="/places/Images/:id" element={<MoreImages/>}/>
     </Route>
   </Routes>
   </>

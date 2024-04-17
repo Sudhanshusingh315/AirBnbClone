@@ -24,7 +24,7 @@ export default function Header() {
             </svg>
           </div>
           {/* air bnb logo on the medium size screens */}
-          <div className="hidden md:flex items-center justify-center">
+          <Link to="/" className="hidden md:flex items-center justify-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -40,7 +40,7 @@ export default function Header() {
               />
             </svg>{" "}
             Airbnb
-          </div>
+          </Link>
           {/* middle search box */}
           <div className="flex flex-col md:shadow-md md:shadow-gray-300 flex-1 px-4 md:flex-row md:flex-none md:justify-center md:items-center md:gap-4  md:py-2 md:px-4 md:border-2 md:border-gray-300 md:rounded-full">
             <div className="w-[100%]  md:block md:font-semibold md:text-xl">

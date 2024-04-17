@@ -379,6 +379,20 @@ export default function Place() {
                 />
               </div>
               <div>
+                <h3>Per Night price</h3>
+                <input
+                  type="text"
+                  name="price"
+                  placeholder="1000₹"
+                  className="w-[100%]"
+                  onChange={(e) => {
+                    setPlaces((prev) => {
+                      return { ...prev, [e.target.name]: e.target.value };
+                    });
+                  }}
+                />
+              </div>
+              <div>
                 <h3>Max number of people</h3>
                 <input
                   type="number"
