@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
-import MoreImages from "./MoreImages";
 export default function SinglePage() {
   const { id } = useParams();
   const [info, setInfo] = useState({});
+  const [checkIn, setCheckIn] = useState("");
+  const [checkOut, setCheckOut] = useState("");
+  const [maxNumber, setMaxNumber] = useState(1);
   useEffect(() => {
     async function fetchData() {
       const { data } = await axios.get(`/api/post/places/?id=${id}`);
@@ -83,7 +85,7 @@ export default function SinglePage() {
       <div className="text-xl font-semibold hover:underline">
         {info.address}
       </div>
-      <div className="flex mb-4 gap-4 w-[40%] items-center ">
+      <div className="flex mb-4 gap-4 w-[40%] items-center rounded-xl">
         <span className="text-gray-500">
           per night:
           <span className="text-black"> ₹{info.price}</span>
@@ -102,28 +104,71 @@ export default function SinglePage() {
           <li>Check Out: {info.checkOut}</li>
           <li>Max GuestsL: {info.maxGuests}</li>
         </ul>
-        <div className="bg-gray-100 shadow-lg h-64 d p-4 rounded-lg">
-          <h1 className="text-center font-semibold">
+        <div className="rounded-2xl border">
+          <h1 className="text-center font-semibold text-xl m-4">
             Price: ₹{info.price} / per night
           </h1>
-          <div className=" m-8">
-            <div className="flex justify-center items-center gap-2">
+          <div className="border border-r-2 mb-4 ">
+            <div className="flex justify-center items-center gap-2  border rounded-lg m-4">
               <div className=" ">
                 <label>Check In:</label>
-                <input type="date" name="" id="" />
+                <input
+                  type="date"
+                  name="checkIn"
+                  onChange={(e) => {
+                    setCheckIn(e.target.value);
+                  }}
+                />
               </div>
 
               <div className="">
                 <label>Check Out:</label>
-                <input type="date" name="" id="" />
+                <input
+                  type="date"
+                  name="checkOut"
+                  onChange={(e) => {
+                    setCheckOut(e.target.value);
+                  }}
+                />
               </div>
             </div>
-            <div className="border my-2 rounded-md text-center">
+            <div className="border my-4 rounded-md text-center mx-4">
               <label>Max Guests</label>
-              <input type="number" name="" id="" />
+              <input
+                className="border rounded-md mb-2"
+                type="number"
+                name="maxGuests"
+                onChange={(e) => {
+                  setMaxNumber(e.target.value);
+                }}
+              />
             </div>
+            {checkIn && checkOut && (
+              <>
+                <div className="m-4 border rounded-md">
+                  <label className="px-2 ">Name:</label>
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="John Doe"
+                    className="w-[100%] px-2"
+                  />
+                </div>
+                <div className="m-4 border rounded-md">
+                  <label className="px-2">Phone:</label>
+                  <input
+                    type="number"
+                    name="name"
+                    placeholder="9871913xxx"
+                    className="w-[100%] px-2"
+                  />
+                </div>
+              </>
+            )}
           </div>
-            <button className="bg-primary text-white rounded-lg w-[100%] h-8 mx-auto">Book Place</button>
+          <button className="bg-primary text-white rounded-lg w-[100%] h-8 mx-auto">
+            Book Place
+          </button>
         </div>
       </div>
     </div>
