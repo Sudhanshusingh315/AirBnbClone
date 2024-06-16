@@ -24,7 +24,7 @@ try {
 
     // without the cookie parser we won't be able to do this
     console.log("this is req cookie",req.cookies);
-    token = req.cookies.jwt;
+    token = req.cookies.jwt || req.headers.authorization.split(" ")[1];
     if (token) {
       try{
         const decoded  = jwt.verify(token,'meow');

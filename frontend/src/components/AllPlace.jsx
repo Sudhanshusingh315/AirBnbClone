@@ -2,14 +2,22 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 export default function AllPlace() {
+  
   const [posts, setPosts] = useState([]);
   useEffect(() => {
-    axios.get("/api/post/").then((res) => {
-      console.log(res);
-      const { allPosts } = res.data;
-      console.log("these are all the posts ", allPosts);
-      setPosts([...allPosts]);
-    });
+    let jwt = JSON.parse(localStorage.getItem("userInfo"));
+    if(jwt){
+      axios.get("/api/post/",{
+        headers:{
+          Authorization: jwt.token
+        }
+      }).then((res) => {
+        console.log(res);
+        const { allPosts } = res.data;
+        console.log("these are all the posts ", allPosts);
+        setPosts([...allPosts]);
+      });
+    }
   }, []);
   console.log("posts state", posts);
   const handleDelete = (e, id) => {

@@ -11,7 +11,7 @@ import SinglePage from "./pages/SinglePage";
 import MoreImages from "./pages/MoreImages";
 import axios from 'axios';
 
-// axios.defaults.baseURL = 'https://airbnbclone-1-5wb7.onrender.com/';
+axios.defaults.baseURL = 'https://airbnbclone-1-5wb7.onrender.com/';
 function App() {
   return <>
   <Routes>
