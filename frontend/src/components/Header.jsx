@@ -71,7 +71,7 @@ export default function Header() {
             </div>
           </div>
           {/* login/logout */}
-          <div className=" md:flex md:bg-primary md:justify-center md:items-center">
+          <div className=" md:flex md:bg-primary md:justify-center md:items-center rounded-lg">
             <div className="p-2 m-1 border-2 border-gray-300 rounded-full hover:bg-gray-400">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -91,7 +91,7 @@ export default function Header() {
             <Link to={userInfo? "/account":'/login'}>
               <div className="hidden md:block">
                 {userInfo ? (
-                  <p>{userInfo.name}</p>
+                  <p className="font-semibold mx-2">{userInfo.name}</p>
                 ):(
 
                   <svg

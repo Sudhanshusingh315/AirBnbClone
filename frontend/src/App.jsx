@@ -24,6 +24,7 @@ function App() {
       </Route>
       <Route path="/places/:id" element={<SinglePage/>}/>
       <Route path="/places/Images/:id" element={<MoreImages/>}/>
+     
     </Route>
   </Routes>
   </>

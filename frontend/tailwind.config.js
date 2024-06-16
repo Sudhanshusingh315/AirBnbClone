@@ -8,9 +8,11 @@ export default {
         secondary: "#FF385C",
       },
     },
+   
     container: {
       center: true,
       padding: "2rem",
+      
     },
   },
   plugins: [],

@@ -1,11 +1,13 @@
 import { Link, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { logOut } from "../../features/user/userSlice";
 import Place from "./Place";
 export default function Account() {
   const { userInfo } = useSelector((state) => state.user);
   const { subpage } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   function linkClasses(type = null) {
     let classes = "py-2 px-6";
     if (type === subpage || (subpage === undefined && type === "profile")) {
@@ -24,6 +26,7 @@ export default function Account() {
   return (
     <>
       <div className="container">
+        <div className="bg-primary text-white w-11 flex justify-center items-center h-11 rounded-full hover:shadow-md" onClick={()=>{navigate(-1)}}>&lt;</div>
         <nav className="flex justify-center gap-3 mb-6">
           <Link to="/account" className={linkClasses("profile")}>
             My Profile
@@ -48,7 +51,7 @@ export default function Account() {
             </div>
             <button
               onClick={(e) => handleLogout(e)}
-              className="container w-full py-4 text-white font-bold text-xl bg-primary rounded-2xl"
+              className="container py-4 text-white font-bold text-xl bg-primary rounded-2xl"
             >
               Logout
             </button>

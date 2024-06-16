@@ -12,6 +12,7 @@ main().catch((err) => console.log(err));
 async function main() {
     // await mongoose.connect("mongodb+srv://LeaderOfMeow:qwezxc!!%40!@cluster1.fvlhmya.mongodb.net/Airbnb");
     await mongoose.connect(process.env.CONNECTION_STRING)
+    
     console.log("mongoose connected")
 }
 app.use(cookieParser());
