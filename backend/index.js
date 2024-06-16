@@ -16,7 +16,7 @@ async function main() {
     console.log("mongoose connected")
 }
 app.use(cookieParser());
-let options = {origin: 'https://locahost:5173'}
+let options = {origin: '*'}
 app.use(cors( options ));
 // user Router
 app.use('/api/user',userRouter.router);
