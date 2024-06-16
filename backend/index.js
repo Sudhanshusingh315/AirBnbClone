@@ -16,8 +16,8 @@ async function main() {
     console.log("mongoose connected")
 }
 app.use(cookieParser());
-
-app.use(cors());
+let options = {origin: 'https://airbnbclone-1-5wb7.onrender.com'}
+app.use(cors( options ));
 // user Router
 app.use('/api/user',userRouter.router);
 // post Roter
