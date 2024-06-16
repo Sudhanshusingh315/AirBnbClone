@@ -9,6 +9,7 @@ export default function AllPlace() {
     if(jwt){
       axios.get("/api/post/",{
         headers:{
+          'Access-Control-Allow-Origin':"https://airbnbclone-1-5wb7.onrender.com",
           Authorization: jwt.token
         }
       }).then((res) => {
