@@ -6,7 +6,8 @@ export default function Index() {
   useEffect(() => {
     let data;
     async function fetchData() {
-      const { data } = await axios.get(`/api/post/getAllPost`);
+      // const { data } = await axios.get(`/api/post/getAllPost`);
+      const { data } = await axios.get(`api/post/getAllPost`);
       setPlaces(data);
     }
     fetchData();

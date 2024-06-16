@@ -9,6 +9,9 @@ import Account from "./pages/Account";
 import EditPage from "./pages/EditPage";
 import SinglePage from "./pages/SinglePage";
 import MoreImages from "./pages/MoreImages";
+import axios from 'axios';
+
+// axios.defaults.baseURL = 'https://airbnbclone-1-5wb7.onrender.com/';
 function App() {
   return <>
   <Routes>

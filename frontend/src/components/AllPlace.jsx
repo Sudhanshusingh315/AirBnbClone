@@ -5,6 +5,7 @@ export default function AllPlace() {
   const [posts, setPosts] = useState([]);
   useEffect(() => {
     axios.get("/api/post/").then((res) => {
+      console.log(res);
       const { allPosts } = res.data;
       console.log("these are all the posts ", allPosts);
       setPosts([...allPosts]);

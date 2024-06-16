@@ -31,7 +31,7 @@ exports.newPost = async (req, res) => {
 exports.getPost = async (req, res) => {
   const id = req.user.id;
   const allPosts = await Place.find({ owner: id });
-res.status(201).json({allPosts});
+  res.status(201).json({allPosts});
 };
 
 
