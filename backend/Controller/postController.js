@@ -10,7 +10,9 @@ exports.newPost = async (req, res) => {
     perks,
     photos,
     title,
+    price
   } = req.body;
+  
   const newPost = await Place.create({
     owner: req.user.id,
     address,
@@ -20,6 +22,7 @@ exports.newPost = async (req, res) => {
     maxGuests,
     photos,
     title,
+    price,
   });
   res.status(201).send("new post Created");
 };

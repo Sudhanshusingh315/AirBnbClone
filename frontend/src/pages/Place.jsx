@@ -68,7 +68,6 @@ export default function Place() {
   }
   // handeling for the checked inputs
   const handleCheckInputs = (e) => {
-    e.preventDefault();
     const { checked, name } = e.target;
     // check is either going to be true or false
     if (checked) {

@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import {useDispatch,useSelector} from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { userAuth } from "../../features/user/userSlice";
 import { useNavigate } from "react-router-dom";
 export default function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const {userInfo} = useSelector(state=> state.user);
+  const { userInfo } = useSelector(state => state.user);
   const [userCredentials, setUserCredentials] = useState({
     email: "",
     password: "",
@@ -19,19 +19,19 @@ export default function Login() {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("userCredentials ",userCredentials);
-    dispatch(userAuth(userCredentials)).then((res)=>{
-      if(res.payload.token){
+    console.log("userCredentials ", userCredentials);
+    dispatch(userAuth(userCredentials)).then((res) => {
+      if (res.payload.token) {
         navigate("/")
       }
     })
     // dipatch logic -> reset the login box and navigate
   };
-  useEffect(()=>{
-    if(userInfo){
+  useEffect(() => {
+    if (userInfo) {
       navigate('/')
     }
-  },[navigate,userInfo])
+  }, [navigate, userInfo])
   return (
     <>
       <div className="container  w-full h-80 flex justify-center items-center">
@@ -67,6 +67,17 @@ export default function Login() {
           >
             Login
           </button>
+          {/* guest users */}
+          {/* <button className="w-full h-10 my-1 bg-primary text-white font-bold rounded-xl"
+            onClick={() => {
+              userCredentials(() => {
+                return { email: "sudhanshu@gmail.com", password: "qwezxc!!@!" }
+              });
+
+            }}
+          >
+            Guest User
+          </button> */}
           <div className="text-gray-400">
             Don&apos;t have an account?{" "}
             <Link to="/register" className="underline text-black">
